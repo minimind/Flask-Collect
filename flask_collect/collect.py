@@ -37,6 +37,7 @@ class Collect(object):
         self.storage = None
         self.filter = None
         self.blueprints = None
+        self.add_hash = False
         if app:
             self.init_app(app)
 
@@ -69,6 +70,8 @@ class Collect(object):
 
         # Save link on blueprints
         self.blueprints = app.blueprints
+
+        self.add_hash = not app.config.get('DEBUG', True)
 
     def init_script(self, manager):
         """Initialize collect scripts with `Flask-Script`_ manager instance.

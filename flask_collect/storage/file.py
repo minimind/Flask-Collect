@@ -12,6 +12,7 @@
 
 from os import path as op, makedirs, remove
 from shutil import copy
+import hashlib
 
 from .base import BaseStorage
 
@@ -39,5 +40,14 @@ class Storage(BaseStorage):
                 remove(destination)
 
             copy(f, destination)
+
+            if self.collect.add_hash:
+                # We'll also add a new file with a hashed component
+                with open(destination) as f:
+                    m = hashlib.sha224()
+                    m.update(f.read())
+                    hex_val = m.hexdigest()
+                    print hex_val
+
             self.log(
                 "Copied: [%s] '%s'" % (bp.name, op.join(self.collect.static_url, destination)))
