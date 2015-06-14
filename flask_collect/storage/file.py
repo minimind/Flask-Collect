@@ -13,7 +13,7 @@
 from os import path as op, makedirs, remove
 from shutil import copy
 import hashlib
-
+import string
 from .base import BaseStorage
 
 
@@ -47,7 +47,17 @@ class Storage(BaseStorage):
                     m = hashlib.sha224()
                     m.update(f.read())
                     hex_val = m.hexdigest()
-                    print hex_val
+
+                    pos = string.rfind(destination, '.')
+                    if pos == -1:
+                        hashed_destination = destination + hex_val
+                    else:
+                        hashed_destination = '%s.%s%s' % (destination[:pos], hex_val[:12], destination[pos:])
+
+                    copy(destination, hashed_destination)
+
+                    self.log(
+                        "Copied: [%s] '%s'" % (bp.name, op.join(self.collect.static_url, hashed_destination)))
 
             self.log(
                 "Copied: [%s] '%s'" % (bp.name, op.join(self.collect.static_url, destination)))
