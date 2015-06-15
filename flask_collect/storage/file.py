@@ -26,6 +26,14 @@ class Storage(BaseStorage):
         """Collect static files from blueprints."""
         self.log("Collect static from blueprints.")
 
+        if self.collect.add_hash:
+            try:
+                with open(self.collect.hashed_files_index, 'w') as f3:
+                    self.collect.hash_values = json.load(f3)
+
+            except IOError:
+                pass
+
         for bp, f, o in self:
             destination = op.join(self.collect.static_root, o)
 
