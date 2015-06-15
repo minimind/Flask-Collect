@@ -28,7 +28,7 @@ class Storage(BaseStorage):
 
         if self.collect.add_hash:
             try:
-                with open(self.collect.hashed_files_index, 'w') as f3:
+                with open(self.collect.hashed_files_index, 'r') as f3:
                     self.collect.hash_values = json.load(f3)
 
             except IOError:
