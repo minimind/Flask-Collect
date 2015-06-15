@@ -54,7 +54,8 @@ class Storage(BaseStorage):
                     else:
                         hashed_destination = '%s.%s%s' % (destination[:pos], hex_val[:12], destination[pos:])
 
-                    copy(destination, hashed_destination)
+                    if not op.exists(hashed_destination):
+                        copy(destination, hashed_destination)
 
                     self.log(
                         "Copied: [%s] '%s'" % (bp.name, op.join(self.collect.static_url, hashed_destination)))
