@@ -15,6 +15,7 @@ from shutil import copy
 import hashlib
 import string
 from .base import BaseStorage
+import json
 
 
 class Storage(BaseStorage):
@@ -43,22 +44,31 @@ class Storage(BaseStorage):
 
             if self.collect.add_hash:
                 # We'll also add a new file with a hashed component
-                with open(destination) as f:
+                with open(destination) as f2:
                     m = hashlib.sha224()
-                    m.update(f.read())
+                    m.update(f2.read())
                     hex_val = m.hexdigest()
 
-                    pos = string.rfind(destination, '.')
+                    pos = string.rfind(o, '.')
                     if pos == -1:
                         hashed_destination = destination + hex_val
+                        hashed_o = o + hex_val
                     else:
-                        hashed_destination = '%s.%s%s' % (destination[:pos], hex_val[:12], destination[pos:])
+                        pos2 = string.rfind(destination, '.')
+                        hashed_destination = '%s.%s%s' % (destination[:pos2], hex_val[:12], destination[pos2:])
+                        hashed_o = '%s.%s%s' % (o[:pos], hex_val[:12], o[pos:])
 
                     if not op.exists(hashed_destination):
                         copy(destination, hashed_destination)
+
+                    self.collect.hash_values[o] = hashed_o
 
                     self.log(
                         "Copied: [%s] '%s'" % (bp.name, op.join(self.collect.static_url, hashed_destination)))
 
             self.log(
                 "Copied: [%s] '%s'" % (bp.name, op.join(self.collect.static_url, destination)))
+
+            if self.collect.add_hash:
+                with open(self.collect.hashed_files_index, 'w') as f3:
+                    json.dump(self.collect.hash_values, f3)

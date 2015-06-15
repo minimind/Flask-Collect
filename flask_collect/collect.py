@@ -38,6 +38,8 @@ class Collect(object):
         self.filter = None
         self.blueprints = None
         self.add_hash = False
+        self.hash_values = None
+        self.hashed_files_index = None
         if app:
             self.init_app(app)
 
@@ -72,6 +74,8 @@ class Collect(object):
         self.blueprints = app.blueprints
 
         self.add_hash = not app.config.get('DEBUG', True)
+        self.hashed_files_index = app.config.get('HASHED_FILE_INDEX', 'hashed_file_index.json')
+        self.hash_values = {}
 
     def init_script(self, manager):
         """Initialize collect scripts with `Flask-Script`_ manager instance.
