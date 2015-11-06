@@ -38,7 +38,7 @@ class BaseStorage(object):
         for bp in app_and_blueprints:
             if bp.has_static_folder and op.isdir(bp.static_folder):
                 for root, _, files in walk(bp.static_folder):
-                    if not len(set(root.split('/')).union(self.collect.ignore)):
+                    if not len(set(root.split('/')) & self.collect.ignore):
                         for f in files:
                             spath = op.join(root, f)
                             tpath = op.relpath(spath, bp.static_folder.rstrip('/'))
