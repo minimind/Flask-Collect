@@ -40,6 +40,7 @@ class Collect(object):
         self.add_hash = False
         self.hash_values = None
         self.hashed_files_index = None
+        self.ignore = set()
         if app:
             self.init_app(app)
 
@@ -69,6 +70,9 @@ class Collect(object):
         if filter_ is not None and isinstance(filter_, string_types):
             filter_ = import_string(filter_)
         self.filter = filter_ if filter_ is not None else list
+
+        self.ignore = set(app.config.get('COLLECT_IGNORE', '').split(','))
+        self.ignore.discard('')
 
         # Save link on blueprints
         self.blueprints = app.blueprints
